@@ -1,14 +1,14 @@
 #include"emp.h"
+#include"start.h"
 #include"stock.h"
 #include"sales.h"
 using namespace std;
 bool END=true;
 char menu()
 {
-	system("cls");
-	
-	cout<<endl<<endl;
 	color(6);
+	system("cls");
+	cout<<endl<<endl;
 	cout<<setw(110)<<":::::::::::::::::::::::::::::MENU:::::::::::::::::::::::::::::";
 	color(10);
 	cout<<endl<<endl<<setw(90)<<"1. EMPLOYEE DETAILS";
@@ -43,6 +43,8 @@ bool Quit()
 }
 int main()
 {
+	start_page();
+	fontsize(20,20);
 	do{
 		char i=menu();
 		switch(i)
