@@ -8,10 +8,17 @@
 using namespace std;
 int emp_no=0;
 int switch_count=-1;
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 void color(int co)
 {
-	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(console,co);
+}
+COORD coord;
+gotoxy(int x,int y)
+{
+	coord.X=x;
+	coord.Y=y;
+	SetConsoleCursorPosition(console,coord);
 }
 void delete_que()
 {
@@ -36,21 +43,34 @@ void invalid_input()
 void pause()
 {
 	line_end(3);
-	color(5);
-	cout<<endl<<setw(95)<<"ENTER ANY KEY TO CONTINUE ...";
+	cout<<setw(65);
+	cout<<" ";
+	color(207);
+	cout<<"                                   ";
+	cout<<endl;
+	color(3);
+	cout<<setw(65);
+	cout<<" ";
+	color(207);
+	cout<<"   ENTER ANY KEY TO CONTINUE ...   ";
+	cout<<endl;
+	color(3);
+	cout<<setw(65);
+	cout<<" ";
+	color(207);
+	cout<<"                                   ";
 	getch();
 }
 class employee
 {
-	char empname[50];
-	int emp_num;
+	char empname[50], emp_code[10], emp_num[10];
 	long emp_sal;
  public:
 	static long ts;
 	employee()
 	{
 		strcpy(empname,"no-name");
-		emp_num=0;
+		strcpy(emp_code,"no-code");
 		emp_sal=0;
 	}
 	void emp_input(employee emp[]);
@@ -66,9 +86,9 @@ class employee
 		cout<<endl<<endl<<setw(100)<<"TOTAL MONTHLY SALARIES OF ALL THE EMPLOYEES :: "<<ts;
 		cout<<endl<<endl;
 	}
-	int num()
+	string num()
 	{
-		return emp_num;
+		return emp_code;
 	}
 	void tsreset()
 	{
@@ -137,18 +157,18 @@ void emp_swi(char i)
 			file1.close();
 			ifstream fi4("employee.txt",ios::in);
 			ofstream fi5("temp.txt",ios::out);
-			int mod;
+			string mod;
 			do{
 				system("cls");
 				cout<<endl;
 				color(10);
 				line_end(5);
-				cout<<setw(110)<<"Enter '999' to see the list of all stocks."<<endl<<endl;
+				cout<<setw(110)<<"Enter 'A' to see the list of all stocks."<<endl<<endl;
 				cout<<setw(120)<<"Enter the stock's number whose profile is to be modified :: ";
 				color(14);
 				cin>>ws;
 				cin>>mod;
-				if(mod==999)
+				if(mod=="a"||mod=="A")
 				{
 					system("cls");
 					fstream fi;
@@ -172,7 +192,7 @@ void emp_swi(char i)
 					fi.close();
 					pause();
 				}
-			}while(mod==999);
+			}while(mod=="a"||mod=="A");
 			int cnt=emp_no;
 			while(!fi4.eof() && cnt!=0)
 			{
@@ -206,16 +226,17 @@ void emp_swi(char i)
 			file1.close();
 			ifstream file4("employee.txt",ios::in);
 			ofstream file5("temp.txt",ios::out);
-			int del;
+			string del;
 			do{
 				system("cls");
 				color(10);
 				cout<<endl;
-				cout<<setw(110)<<"Enter '999' to see the list of all employees."<<endl<<endl;
+				cout<<setw(110)<<"Enter 'A' to see the list of all employees."<<endl<<endl;
 				cout<<setw(120)<<"Enter the employee's number whose profile is to be deleted :: ";
 				color(14);
+				cin>>ws;
 				cin>>del;
-				if(del==999)
+				if(del=="a"||del=="A")
 				{
 					system("cls");
 					fstream fi;
@@ -240,7 +261,7 @@ void emp_swi(char i)
 					fi.close();
 					pause();
 				}
-			}while(del==999);
+			}while(del=="A"||del=="a");
 			int count=emp_no;
 			while(!file4.eof() && count!=0)
 			{
@@ -328,13 +349,14 @@ void employee::emp_input(employee emp[])
 	color(14);
 	cin>>ws;
 	cin.get(empname,50);
-	int num;
+	char num[10];
 	do
 	{
 		cout<<endl<<setw(90);
 		color(10);
-		cout<<"Enter the number of employee :: ";
+		cout<<"Enter the employee code :: ";
 		color(14);
+		cin>>ws;
 		if(!(cin>>num))
 		{
 			cin.clear();
@@ -346,7 +368,7 @@ void employee::emp_input(employee emp[])
 			check=true;
 			for(int i=0;i<emp_no;i++)
 			{	
-				if(emp[i].num()==num||num==999)
+				if(emp[i].num()==num)
 				{
 					check=false;
 					break;
@@ -358,7 +380,7 @@ void employee::emp_input(employee emp[])
 		if(check==false)
 			invalid_input();
 	}while(check==false);
-	emp_num=num;
+	strcpy(emp_code,num);
 	do{
 		cout<<endl<<setw(90);
 		color(10);
@@ -383,6 +405,21 @@ void employee::emp_input(employee emp[])
 		if(check==false)
 			invalid_input();
 	}while(check==false);
+	do{
+		cout<<endl<<setw(90);
+		color(10);
+		cout<<"Enter the phone number of employee :: ";
+		color(14);
+		cin>>ws;
+		cin>>emp_num;
+		if(strlen(emp_num)!=10)
+			check=false;
+		else 
+			check=true;
+		if(check==false)
+			invalid_input();
+	}while(check==false);
+
 	color(10);
 	cout<<endl;
 	cout<<setw(110)<<"::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::";
@@ -393,7 +430,7 @@ void employee::emp_display()
 	line_end(2);
 	cout<<setw(110)<<"::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::";
 
-	cout<<endl<<endl<<setw(88);
+	cout<<endl<<endl<<setw(90);
 	color(10);
 	cout<<"The name of employee is :: ";
 	color(14);
@@ -401,9 +438,9 @@ void employee::emp_display()
 	
 	cout<<endl<<endl<<setw(90);
 	color(10);
-	cout<<"The number of employee is :: ";
+	cout<<"The employee code is :: ";
 	color(14);
-	cout<<emp_num;
+	cout<<emp_code;
 	
 	cout<<endl<<endl<<setw(90);
 	color(10);
@@ -411,6 +448,12 @@ void employee::emp_display()
 	color(14);
 	cout<<emp_sal;
 	
+	cout<<endl<<endl<<setw(90);
+	color(10);
+	cout<<"The phone number of employee :: ";
+	color(14);
+	cout<<emp_num;
+
 	cout<<endl<<endl;
 	color(10);
 	cout<<setw(110)<<"::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::";
@@ -442,11 +485,10 @@ void employee::emp_modify(employee emp[])
 	if(strcmp(temp,"999"))
 		strcpy(empname,temp);
 	int num;
-
 	cout<<endl<<setw(90);
 	color(12);
-	cout<<"Enter the employee number :: ";
-	cout<<emp_num<<"\t(UNCHANGABLE)"<<endl;;
+	cout<<"Enter the employee code :: ";
+	cout<<emp_code<<"\t(UNCHANGABLE)"<<endl;;
 	do{
 		cout<<endl<<setw(90);
 		color(10);
@@ -470,9 +512,26 @@ void employee::emp_modify(employee emp[])
 			invalid_input();
 	}while(check==false);
 	if(num!=999)
-	{
 		emp_sal=num;
-	}
+
+	do{
+		cout<<endl<<setw(90);
+		color(10);
+		cout<<"Enter the phone number of employee :: ";
+		color(14);
+		cin>>ws;
+		cin>>temp;
+		if(strlen(temp)==10)
+			check=true;
+		else if(strcmp(temp,"999"))
+			check=true;
+		else
+			check=false;
+		if(check==false)
+			invalid_input();
+	}while(check==false);
+	if(strcmp(temp,"999"))
+		strcpy(emp_num,temp);
 	color(10);
 	cout<<endl;
 	cout<<setw(110)<<"::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::";
